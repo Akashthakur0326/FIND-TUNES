@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "FIND-TUNES"
+version = "0.1.0"
+description = "Resume recommender system with MLOps architecture"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]

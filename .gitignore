@@ -1,0 +1,37 @@
+# Python Virtual Environments
+.venv/
+venv/
+ENV/
+
+# Python Cache (Speeds up execution, but messy for Git)
+__pycache__/
+*.py[cod]
+
+# Secret keys (API keys, DB passwords)
+.env
+
+# MLOps Junk
+logs/
+mlruns/
+
+# --- Ignore Data and Temp directories ---
+
+# 1. Ignore everything in these folders
+data/*
+src/data/*
+src/temp_audio/*
+
+# 2. But do NOT ignore directories themselves (so Git can look inside them)
+!data/**/
+!src/data/**/
+
+# 3. Specifically "un-ignore" CSV files in those directories
+!data/**/*.csv
+!src/data/**/*.csv
+
+# Global heavy file safety lock
+*.zip
+*.tar.gz
+*.wav
+*.mp3
+*.onnx

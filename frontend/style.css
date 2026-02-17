@@ -1,0 +1,143 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #0a2540;
+}
+
+/* 🌟 NEW: The wrapper that will get blurred */
+.main-content-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: filter 0.5s ease;
+}
+.main-content-wrapper.blurred {
+    filter: blur(15px) brightness(0.5);
+    pointer-events: none;
+}
+
+/* Static Backgrounds */
+.animated-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #0c4a6e 0%, #164e63 50%, #0e7490 100%);
+    z-index: 1;
+}
+
+/* Floating Notes (Kept simple) */
+.music-notes { position: absolute; width: 100%; height: 100%; overflow: hidden; }
+.note {
+    position: absolute; font-size: 24px; color: rgba(34, 211, 238, 0.4);
+    animation: floatNote 8s linear infinite; will-change: transform;
+}
+.note:nth-child(1) { left: 10%; animation-delay: 0s; }
+.note:nth-child(2) { left: 30%; animation-delay: 2s; }
+.note:nth-child(3) { left: 50%; animation-delay: 1s; }
+.note:nth-child(4) { left: 70%; animation-delay: 3s; }
+.note:nth-child(5) { left: 90%; animation-delay: 1.5s; }
+.note:nth-child(6) { left: 20%; animation-delay: 4s; }
+.note:nth-child(7) { left: 80%; animation-delay: 2.5s; }
+.note:nth-child(8) { left: 40%; animation-delay: 5s; }
+.note:nth-child(9) { left: 60%; animation-delay: 3.5s; }
+
+@keyframes floatNote {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+
+/* The Headphone */
+.headphone-container { position: absolute; width: 700px; height: 700px; opacity: 0.25; z-index: 2; }
+.headphone { width: 100%; height: 100%; position: relative; }
+.headphone-band {
+    position: absolute; width: 320px; height: 380px; border: 35px solid #22d3ee;
+    border-bottom: none; border-radius: 280px 280px 0 0; top: 50%; left: 50%; transform: translate(-50%, -58%);
+}
+.headphone-ear {
+    position: absolute; width: 110px; height: 140px; background: linear-gradient(145deg, #22d3ee, #0ea5e9);
+    border-radius: 20px; top: 56%; box-shadow: 0 5px 20px rgba(34, 211, 238, 0.4);
+}
+.headphone-ear.left { left: 17%; transform: rotate(-5deg); }
+.headphone-ear.right { right: 17%; transform: rotate(5deg); }
+
+/* Main UI */
+.main-container { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 60px; }
+.title { font-size: 4.5em; font-weight: 900; color: white; letter-spacing: 12px; text-shadow: 0 0 15px #22d3ee; }
+.recorder-section { display: flex; flex-direction: column; align-items: center; gap: 40px; }
+.status-text { font-size: 1.6em; color: white; font-weight: 600; text-shadow: 0 2px 15px rgba(0,0,0,0.5); }
+
+/* The Button (Stripped of complex scaling) */
+.circle-button {
+    width: 200px; height: 200px; border-radius: 50%; cursor: pointer;
+    background: radial-gradient(circle at 30% 30%, #a78bfa, #8b5cf6, #7c3aed);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.4), 0 0 80px rgba(139,92,246,0.6);
+    display: flex; align-items: center; justify-content: center; border: 5px solid rgba(255,255,255,0.3);
+    transition: 0.3s;
+}
+.circle-button:hover { transform: scale(1.05); }
+
+/* 🌟 NEW: Simple active state */
+.circle-button.recording {
+    background: radial-gradient(circle at 30% 30%, #ef4444, #dc2626, #991b1b);
+    box-shadow: 0 0 50px #ef4444;
+}
+
+.icon {
+    width: 100px; height: 100px; background: white;
+    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>') center/contain no-repeat;
+    -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>') center/contain no-repeat;
+}
+
+/* Vinyl Add Button */
+.vinyl-container { position: fixed; bottom: 40px; right: 40px; display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 1000; }
+.vinyl-label { font-size: 1em; color: white; font-weight: 700; letter-spacing: 2px; }
+.vinyl-btn {
+    width: 90px; height: 90px; border-radius: 50%; cursor: pointer; border: 3px solid #0a0a0a;
+    background: radial-gradient(circle at center, #333 0%, #333 12%, transparent 12%, transparent 13%, #1a1a1a 13%, #1a1a1a 22%, #444 22%, #444 23%, #1a1a1a 23%, #1a1a1a 32%, #555 32%, #555 33%, #1a1a1a 33%, #1a1a1a 42%, #444 42%, #444 43%, #1a1a1a 43%, #1a1a1a 52%, #333 52%, #333 53%, #1a1a1a 53%, #1a1a1a 100%);
+    animation: rotate 4s linear infinite;
+}
+.vinyl-btn::before {
+    content: ''; position: absolute; width: 24px; height: 24px; border-radius: 50%;
+    background: radial-gradient(circle, #f5f5f5, #d0d0d0); top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
+.vinyl-btn::after {
+    content: ''; position: absolute; width: 8px; height: 8px; background: #666;
+    border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
+@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* 🌟 NEW: The Pop-over Results Section */
+.results-section {
+    display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 90vw; max-width: 1200px; z-index: 2000; flex-direction: column; align-items: center;
+}
+.results-section.active { display: flex; animation: fadeIn 0.5s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translate(-50%, -40%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+
+.results-header { font-size: 2.5em; color: white; margin-bottom: 20px; text-shadow: 0 4px 20px black; }
+.video-carousel { display: flex; overflow-x: auto; gap: 30px; padding: 20px; width: 100%; justify-content: flex-start; }
+.video-item { min-width: 600px; height: 350px; flex-shrink: 0; border-radius: 20px; overflow: hidden; background: #000; box-shadow: 0 10px 40px black; }
+.close-results-btn { margin-top: 20px; padding: 15px 40px; font-size: 1.2em; background: #ef4444; color: white; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; }
+.close-results-btn:hover { background: #dc2626; }
+
+/* Modal */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 3000; }
+.modal.active { display: flex; }
+.modal-content { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 500px; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.close-btn { background: none; border: none; font-size: 2em; cursor: pointer; color: red; }
+.form-group { margin-bottom: 15px; }
+.form-label { display: block; margin-bottom: 5px; font-weight: bold; }
+.form-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
+.submit-btn { width: 100%; padding: 15px; background: #0ea5e9; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }

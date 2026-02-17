@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIND-TUNES</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div id="mainContent" class="main-content-wrapper">
+        
+        <div class="animated-bg">
+            <div class="music-notes">
+                <div class="note">♪</div><div class="note">♫</div><div class="note">♪</div>
+                <div class="note">♫</div><div class="note">♪</div><div class="note">♫</div>
+                <div class="note">♪</div><div class="note">♫</div><div class="note">♪</div>
+            </div>
+        </div>
+
+        <div class="headphone-container">
+            <div class="headphone">
+                <div class="headphone-band"></div>
+                <div class="headphone-ear left"></div>
+                <div class="headphone-ear right"></div>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <h1 class="title">FIND-TUNES</h1>
+
+            <div class="recorder-section">
+                <div class="status-text" id="statusText">Tap to discover music</div>
+                
+                <div class="circle-button" id="recordBtn">
+                    <div class="icon"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="vinyl-container">
+            <div class="vinyl-label">ADD SONG</div>
+            <button class="vinyl-btn" id="vinylBtn"></button>
+        </div>
+    </div>
+
+    <div class="results-section" id="resultsSection">
+        <h2 class="results-header">🎉 Discovered Songs</h2>
+        <div class="video-carousel" id="videoCarousel"></div>
+        <button class="close-results-btn" id="closeResultsBtn">Search Again</button>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Song</h2>
+                <button class="close-btn" id="closeBtn">×</button>
+            </div>
+            <form id="addSongForm">
+                <div class="form-group">
+                    <label class="form-label">Song Name</label>
+                    <input type="text" class="form-input" id="songName" placeholder="Enter song name..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Artist Name</label>
+                    <input type="text" class="form-input" id="artistName" placeholder="Enter artist name..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">YouTube URL</label>
+                    <input type="url" class="form-input" id="youtubeUrl" placeholder="https://youtube.com/..." required>
+                </div>
+                <button type="submit" class="submit-btn">Add Song</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+name: FIND-TUNES Continual Learning Pipeline
+
+on:
+  # 1. Automate it: Run at 2:00 AM UTC every single day
+  schedule:
+    - cron: '0 2 * * *'
+  
+  # 2. Manual Override: Allows you to click a "Run" button in the GitHub UI
+  workflow_dispatch: 
+
+jobs:
+  retrain-and-evaluate:
+    # 🌟 CRITICAL: This tells GitHub NOT to use their servers, but to ping your EC2
+    runs-on: [self-hosted, linux] 
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Install 'uv' Package Manager
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          source $HOME/.cargo/env
+
+      - name: 🚀 Run Continual Learning Orchestrator
+        # 🚨 INJECTING SECRETS: The runner pulls these safely from GitHub Repo Settings
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+          PYTHONPATH: src  # Ensures Python finds your find_tunes module
+        run: |
+          # uv run automatically handles the virtual environment and dependencies!
+          uv run python -m find_tunes.scripts.continual_learning

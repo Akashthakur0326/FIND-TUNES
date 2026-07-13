@@ -69,6 +69,20 @@ def prepare_training_audio():
     downloaded_count = 0
     
     for i, target in enumerate(all_targets, 1):
+        # 🌟 SMART LOOKUP: Search the directory for any file starting with the ID
+        song_id = target.get('song_id')
+        possible_files = list(CL_DATA_DIR.glob(f"{song_id}.wav"))
+        
+        # Also check for your eval_query names if they exist
+        if not possible_files:
+            possible_files = list(CL_DATA_DIR.glob(f"*{song_id}*")) 
+
+        if possible_files:
+            logger.info(f"✅ Found local file for {target.get('title')}: {possible_files[0].name}")
+            downloaded_count += 1 
+            continue # Already exists, skip download
+        
+        # ... proceed to download if not found ...
         safe_name = f"{target['song_id']}.wav"
         save_path = str(CL_DATA_DIR / safe_name)
         

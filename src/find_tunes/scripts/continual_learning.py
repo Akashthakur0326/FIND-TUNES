@@ -72,7 +72,9 @@ def prepare_training_audio():
         safe_name = f"{target['song_id']}.wav"
         save_path = str(CL_DATA_DIR / safe_name)
         
-        logger.info(f"📥 Fetching {i}/{len(all_targets)}: {target['title']}")
+
+        title = target.get('title', 'Unknown Title')
+        logger.info(f"📥 Fetching {i}/{len(all_targets)}: {title}")
         success = audio_engine.download_and_process(target['youtube_url'], save_path)
         
         if success:

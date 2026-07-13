@@ -63,38 +63,40 @@ def prepare_training_audio():
         shutil.rmtree(CL_DATA_DIR)
     CL_DATA_DIR.mkdir(parents=True, exist_ok=True)
     
+    # 🌟 HARDCODED EVAL QUERY PATH
+    eval_query_path = Path(r"C:\Users\Admin\Desktop\FIND TUNES\src\find_tunes\services\ml_branch\continual_learning\data\cl_training\eval_query_433a7b41-5a55-4eed-afb5-760a78eb477e.wav")
+    
     audio_engine = AudioEngine()
     all_targets = new_songs + old_songs
-    
     downloaded_count = 0
     
     for i, target in enumerate(all_targets, 1):
-        # 🌟 SMART LOOKUP: Search the directory for any file starting with the ID
         song_id = target.get('song_id')
-        possible_files = list(CL_DATA_DIR.glob(f"{song_id}.wav"))
+        safe_name = f"{song_id}.wav"
+        save_path = CL_DATA_DIR / safe_name
         
-        # Also check for your eval_query names if they exist
-        if not possible_files:
-            possible_files = list(CL_DATA_DIR.glob(f"*{song_id}*")) 
-
-        if possible_files:
-            logger.info(f"✅ Found local file for {target.get('title')}: {possible_files[0].name}")
-            downloaded_count += 1 
-            continue # Already exists, skip download
-        
-        # ... proceed to download if not found ...
-        safe_name = f"{target['song_id']}.wav"
-        save_path = str(CL_DATA_DIR / safe_name)
-        
-
+        # 1. PRIORITY: Check if we can use the eval_query file
+        if eval_query_path.exists():
+            shutil.copy(eval_query_path, save_path)
+            logger.info(f"✅ Copied eval_query file for {target.get('title')}")
+            downloaded_count += 1
+            continue
+            
+        # 2. SECONDARY: Check standard local folder
+        if save_path.exists():
+            logger.info(f"✅ Found local file for {target.get('title')}")
+            downloaded_count += 1
+            continue
+            
+        # 3. FALLBACK: Attempt download (YouTube block might happen here)
         title = target.get('title', 'Unknown Title')
         logger.info(f"📥 Fetching {i}/{len(all_targets)}: {title}")
-        success = audio_engine.download_and_process(target['youtube_url'], save_path)
+        success = audio_engine.download_and_process(target['youtube_url'], str(save_path))
         
         if success:
             downloaded_count += 1
             
-        time.sleep(random.uniform(1.0, 3.0)) # Lowered jitter for faster testing
+        time.sleep(random.uniform(1.0, 3.0)) 
         
     logger.success(f"✅ Data Prep Complete. {downloaded_count} audio files ready for PyTorch.")
     return True

@@ -12,6 +12,9 @@ from find_tunes.core.database import SessionLocal, SpectrogramEmbedding, PitchEm
 from find_tunes.services.ml_branch.continual_learning.model import AudioSiameseNet, CRNN
 from find_tunes.scripts.seed_DB import seed_database # Your re-indexing script
 
+"""
+combines your ONNX export logic, your MLflow logic, and the database re-indexing trigger into one massive automated sequence
+"""
 # --- CONFIG ---
 USERNAME = "Akashthakur0326"
 TOKEN = os.getenv("DAGSHUB_TOKEN", "151e112b65246898b07ded104b6490eb8fff4fbd")

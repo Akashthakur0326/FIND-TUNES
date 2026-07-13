@@ -1,0 +1,20 @@
+{
+    "sqltools.connections": [
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": true
+                }
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "findtunes-db.cnaume6w8w1t.ap-south-1.rds.amazonaws.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "findtunes-rds",
+            "database": "postgres",
+            "username": "postgres",
+            "password": "your_secure_password123"
+        }
+    ]
+}

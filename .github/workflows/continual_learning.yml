@@ -1,0 +1,29 @@
+name: FIND-TUNES Continual Learning Pipeline
+
+on:
+  # 🌟 Manual override ONLY for this test phase
+  workflow_dispatch: 
+
+jobs:
+  retrain-and-evaluate:
+    # Ensures it runs on your EC2, not GitHub's weak servers
+    runs-on: [self-hosted, linux] 
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Install 'uv' Package Manager
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: 📦 Sync Dependencies
+        run: uv sync
+
+      - name: 🚀 Run Continual Learning Orchestrator
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+          PYTHONPATH: src
+        run: uv run python -m find_tunes.scripts.continual_learning

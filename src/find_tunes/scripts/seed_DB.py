@@ -9,7 +9,9 @@ from find_tunes.services.ingestion_cycle.ingestion import process_single_song
 
 # 🌟 SET YOUR STARTING ROW HERE
 START_INDEX = 0
-
+"""
+for each song gets embedding by passing it to both the ML models and also the dsp fingerprint model 
+"""
 def seed_database():
     logger.add("data/ingestion_debug.log", rotation="10 MB", retention="10 days", level="INFO")
     print("📂 Initializing directories and database...")

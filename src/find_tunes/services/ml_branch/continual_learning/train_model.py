@@ -16,8 +16,8 @@ from find_tunes.services.ml_branch.onnx_runner import ml_engine
 
 # Import your architectures and datasets (assuming you saved them in these files)
 # If these don't exist yet, you should place your PyTorch class definitions in a 'models.py' and 'datasets.py'
-from find_tunes.services.ml_branch.model import AudioSiameseNet, CRNN
-from find_tunes.services.ml_branch.dataset import DualObjectiveSiameseDataset, PitchDataset
+from find_tunes.services.ml_branch.continual_learning.model import AudioSiameseNet, CRNN
+from find_tunes.services.ml_branch.continual_learning.dataset import DualObjectiveSiameseDataset, PitchDataset
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -77,9 +77,9 @@ def finetune_spec_model(data_dir: str):
     criterion = nn.TripletMarginLoss(margin=0.75)
     scaler = GradScaler()
     
-    # 4. Short Training Loop (e.g., 10 epochs for continual learning)
+    # 4. Short Training Loop (e.g., 15 epochs for continual learning)
     model.train()
-    for epoch in range(10):
+    for epoch in range(2):#epochs lowered for testing stage 
         running_loss = 0.0
         for anc, pos, neg in dataloader:
             anc, pos, neg = anc.to(DEVICE), pos.to(DEVICE), neg.to(DEVICE)
@@ -123,7 +123,7 @@ def finetune_pitch_model(data_dir: str):
     
     # 4. Short Training Loop
     model.train()
-    for epoch in range(10):
+    for epoch in range(2):
         total_loss = 0
         for a, p, n in dataloader:
             a, p, n = a.to(DEVICE), p.to(DEVICE), n.to(DEVICE)

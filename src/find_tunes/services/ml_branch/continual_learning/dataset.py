@@ -8,14 +8,12 @@ import torchaudio
 import torch.nn.functional as F
 from torch.utils.data import Dataset
 
-# 🌟 THE FIX: Swapped AddBackgroundNoise for AddColorNoise and AddGaussianNoise
 from audiomentations import Compose, PitchShift, TimeStretch, Gain, AddColorNoise, AddGaussianNoise
 
 # ==========================================
 # SPECTROGRAM DATASET (Self-Supervised)
 # ==========================================
 class SelfSupervisedSiameseDataset(Dataset):
-    # 🌟 THE FIX: Removed noise_dir from the parameters
     def __init__(self, data_dir, sample_rate=16000, duration=3.0):
         
         self.files = glob.glob(os.path.join(data_dir, "*.wav"))

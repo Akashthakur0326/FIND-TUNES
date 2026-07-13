@@ -1,37 +1,62 @@
-# Python Virtual Environments
+# =========================================================
+# Python
+# =========================================================
 .venv/
 venv/
 ENV/
 
-# Python Cache (Speeds up execution, but messy for Git)
 __pycache__/
 *.py[cod]
 
-# Secret keys (API keys, DB passwords)
+# =========================================================
+# Secrets
+# =========================================================
 .env
 
-# MLOps Junk
+# =========================================================
+# Logs / MLflow
+# =========================================================
 logs/
 mlruns/
 
-# --- Ignore Data and Temp directories ---
-
-# 1. Ignore everything in these folders
+# =========================================================
+# Ignore generated data folders
+# =========================================================
 data/*
 src/data/*
 src/temp_audio/*
 
-# 2. But do NOT ignore directories themselves (so Git can look inside them)
+# Keep directory structure
 !data/**/
 !src/data/**/
 
-# 3. Specifically "un-ignore" CSV files in those directories
+# Keep CSV files
 !data/**/*.csv
 !src/data/**/*.csv
 
-# Global heavy file safety lock
+# =========================================================
+# Heavy files
+# =========================================================
 *.zip
 *.tar.gz
-*.wav
 *.mp3
 *.onnx
+
+# Ignore ALL wav files by default
+*.wav
+
+# =========================================================
+# ONLY keep continual learning training wavs
+# =========================================================
+
+*.wav
+
+!src/
+!src/find_tunes/
+!src/find_tunes/services/
+!src/find_tunes/services/ml_branch/
+!src/find_tunes/services/ml_branch/continual_learning/
+!src/find_tunes/services/ml_branch/continual_learning/data/
+!src/find_tunes/services/ml_branch/continual_learning/data/cl_training/
+
+!src/find_tunes/services/ml_branch/continual_learning/data/cl_training/*.wav

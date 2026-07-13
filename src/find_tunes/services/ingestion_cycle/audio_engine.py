@@ -76,39 +76,38 @@ class AudioEngine:
             'duration': entry.get('duration')
         }
 
-    def download_and_process(self, url: str, output_path: str) -> bool:
+def download_and_process(self, url: str, output_path: str) -> bool:
+        # 🌟 NEW: Skip download if file exists (Bypasses YouTube blocking on EC2)
+        if os.path.exists(output_path):
+            logger.info(f"⏭️ Local file detected, skipping download: {output_path}")
+            return True
+
         temp_id = str(uuid.uuid4())
         temp_filename = f"temp_{temp_id}"
         temp_full_path = os.path.join(os.path.dirname(output_path), temp_filename)
         
         opts = self.ydl_opts.copy()
         opts['outtmpl'] = temp_full_path
-        downloaded_file = f"{temp_full_path}.wav" # yt-dlp appends this
-
+        # ⚠️ NOTE: yt-dlp is often blocked on EC2. If this fails, 
+        # ensure your training files are committed to src/find_tunes/services/ml_branch/continual_learning/data/cl_training/originals/
+        
         try:
             with yt_dlp.YoutubeDL(opts) as ydl:
                 ydl.download([url])
 
+            downloaded_file = f"{temp_full_path}.wav"
             if not os.path.exists(downloaded_file):
-                logger.error(f"❌ yt-dlp failed to produce: {downloaded_file}")
+                logger.error(f"❌ yt-dlp failed. Check YouTube access on EC2.")
                 return False
 
-            # Normalize to your specific ML requirements (16kHz, Mono)
             audio = AudioSegment.from_file(downloaded_file)
             audio = audio.set_frame_rate(SAMPLE_RATE).set_channels(CHANNELS)
             audio.export(output_path, format="wav")
-
+            
+            # Cleanup
+            if os.path.exists(downloaded_file): os.remove(downloaded_file)
             return True
 
         except Exception as e:
             logger.error(f"❌ AudioEngine Processing failed: {e}")
             return False
-            
-        finally:
-            # 🌟 THE FIX: This runs NO MATTER WHAT (success or crash).
-            # It ensures the random UUID files are always deleted.
-            if os.path.exists(downloaded_file):
-                try:
-                    os.remove(downloaded_file)
-                except Exception as cleanup_error:
-                    logger.warning(f"⚠️ Could not delete temp file {downloaded_file}: {cleanup_error}")

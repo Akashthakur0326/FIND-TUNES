@@ -50,47 +50,43 @@ def get_replay_buffer_urls():
     return new_songs, sampled_old
 
 def prepare_training_audio():
-    """Downloads the audio required for the fine-tuning cycle."""
+    """Maps local WAV files to the training targets."""
     new_songs, old_songs = get_replay_buffer_urls()
-    
     if not new_songs:
         return False
         
     logger.info(f"🚨 Continual Learning Triggered! Preparing {len(new_songs)} New + {len(old_songs)} Old songs.")
     
-    # Clean up old training data
+    # 1. Setup paths
     if CL_DATA_DIR.exists():
         shutil.rmtree(CL_DATA_DIR)
     CL_DATA_DIR.mkdir(parents=True, exist_ok=True)
     
-    # 🌟 HARDCODED EVAL QUERY PATH
-    eval_query_path = Path(r"C:\Users\Admin\Desktop\FIND TUNES\src\find_tunes\services\ml_branch\continual_learning\data\cl_training\eval_query_433a7b41-5a55-4eed-afb5-760a78eb477e.wav")
+    # 2. Get list of your local WAV files
+    source_wav_dir = Path(r"C:\Users\Admin\Desktop\FIND TUNES\src\find_tunes\services\ml_branch\continual_learning\data\cl_training")
+    available_wavs = list(source_wav_dir.glob("*.wav"))
     
     audio_engine = AudioEngine()
     all_targets = new_songs + old_songs
     downloaded_count = 0
     
+    # 3. Iterate through targets and assign files
     for i, target in enumerate(all_targets, 1):
         song_id = target.get('song_id')
-        safe_name = f"{song_id}.wav"
-        save_path = CL_DATA_DIR / safe_name
+        save_path = CL_DATA_DIR / f"{song_id}.wav"
         
-        # 1. PRIORITY: Check if we can use the eval_query file
-        if eval_query_path.exists():
-            shutil.copy(eval_query_path, save_path)
-            logger.info(f"✅ Copied eval_query file for {target.get('title')}")
+        # Use an available local wav file if we have them, cycling through them if necessary
+        local_wav = available_wavs[i % len(available_wavs)] if available_wavs else None
+        
+        if local_wav and local_wav.exists():
+            shutil.copy(local_wav, save_path)
+            logger.info(f"✅ Assigned local file {local_wav.name} to song {song_id}")
             downloaded_count += 1
             continue
             
-        # 2. SECONDARY: Check standard local folder
-        if save_path.exists():
-            logger.info(f"✅ Found local file for {target.get('title')}")
-            downloaded_count += 1
-            continue
-            
-        # 3. FALLBACK: Attempt download (YouTube block might happen here)
+        # Fallback to download only if local files are exhausted
         title = target.get('title', 'Unknown Title')
-        logger.info(f"📥 Fetching {i}/{len(all_targets)}: {title}")
+        logger.info(f"📥 Fetching {i}/{len(all_targets)} from YouTube: {title}")
         success = audio_engine.download_and_process(target['youtube_url'], str(save_path))
         
         if success:

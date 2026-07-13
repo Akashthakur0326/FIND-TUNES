@@ -17,7 +17,8 @@ from find_tunes.services.ml_branch.onnx_runner import ml_engine
 # Import your architectures and datasets (assuming you saved them in these files)
 # If these don't exist yet, you should place your PyTorch class definitions in a 'models.py' and 'datasets.py'
 from find_tunes.services.ml_branch.continual_learning.model import AudioSiameseNet, CRNN
-from find_tunes.services.ml_branch.continual_learning.dataset import DualObjectiveSiameseDataset, PitchDataset
+# from find_tunes.services.ml_branch.continual_learning.dataset import DualObjectiveSiameseDataset, PitchDataset
+from find_tunes.services.ml_branch.continual_learning.dataset import SelfSupervisedSiameseDataset, PitchDataset
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -51,7 +52,7 @@ def finetune_spec_model(data_dir: str):
     # 1. Setup Data (100% Self-Invariance since we have no cover pairs for new YouTube songs)
     wav_files = [os.path.basename(f) for f in glob.glob(os.path.join(data_dir, "*.wav"))]
     
-    dataset = DualObjectiveSiameseDataset(
+    dataset = SelfSupervisedSiameseDataset(
         anchor_list=wav_files,
         pair_map={}, # Empty, forces self-invariance task
         originals_dir=data_dir,
